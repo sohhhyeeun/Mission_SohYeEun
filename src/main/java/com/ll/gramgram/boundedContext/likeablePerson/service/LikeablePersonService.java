@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -47,5 +48,16 @@ public class LikeablePersonService {
 
     public List<LikeablePerson> findByFromInstaMemberId(Long fromInstaMemberId) {
         return likeablePersonRepository.findByFromInstaMemberId(fromInstaMemberId);
+    }
+
+    @Transactional
+    public void delete(LikeablePerson likeablePerson) {
+        likeablePersonRepository.delete(likeablePerson);
+    }
+
+    public LikeablePerson getPerson(Long id) {
+        Optional<LikeablePerson> person = likeablePersonRepository.findById(id.intValue());
+
+        return person.get();
     }
 }

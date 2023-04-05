@@ -11,7 +11,7 @@ spring:
       client:
         registration:
           kakao:
-            clientId: 0e59d4068f2c83091f3c4511cb557c15
+            clientId: a1ea930392abdbcb1b624af81892d86e
             scope:
             client-name: Kakao
             authorization-grant-type: authorization_code
