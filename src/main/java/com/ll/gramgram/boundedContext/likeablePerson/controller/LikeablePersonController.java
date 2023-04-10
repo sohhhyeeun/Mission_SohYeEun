@@ -5,22 +5,15 @@ import com.ll.gramgram.base.rsData.RsData;
 import com.ll.gramgram.boundedContext.instaMember.entity.InstaMember;
 import com.ll.gramgram.boundedContext.likeablePerson.entity.LikeablePerson;
 import com.ll.gramgram.boundedContext.likeablePerson.service.LikeablePersonService;
-import com.ll.gramgram.boundedContext.member.entity.Member;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -30,6 +23,7 @@ public class LikeablePersonController {
     private final Rq rq;
     private final LikeablePersonService likeablePersonService;
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/add")
     public String showAdd() {
         return "usr/likeablePerson/add";
@@ -42,6 +36,7 @@ public class LikeablePersonController {
         private final int attractiveTypeCode;
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/add")
     public String add(@Valid AddForm addForm) {
         RsData<LikeablePerson> createRsData = likeablePersonService.like(rq.getMember(), addForm.getUsername(), addForm.getAttractiveTypeCode());
@@ -53,6 +48,7 @@ public class LikeablePersonController {
         return rq.redirectWithMsg("/likeablePerson/list", createRsData);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/list")
     public String showList(Model model) {
         InstaMember instaMember = rq.getMember().getInstaMember();
@@ -67,18 +63,18 @@ public class LikeablePersonController {
     }
 
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("/delete/{id}")
-    public String delete(Principal principal, @PathVariable("id") Long id) {
-        LikeablePerson likeablePerson = likeablePersonService.getPerson(id);
+    @DeleteMapping("/{id}")
+    public String delete(@PathVariable Long id) {
+        LikeablePerson likeablePerson = likeablePersonService.findById(id).orElse(null);
 
-        /*
-        if (!likeablePerson.getFromInstaMember().getUsername().equals(principal.getName())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "삭제권한이 없습니다.");
-        }
-        */
+        RsData deleteRsData = likeablePersonService.deleteRsData(rq.getMember(), likeablePerson);
+        if (deleteRsData.isFail())
+            return rq.historyBack(deleteRsData);
 
-        likeablePersonService.delete(likeablePerson);
+        RsData delete = likeablePersonService.delete(likeablePerson);
+        if (delete.isFail())
+            return rq.historyBack(delete);
 
-        return rq.redirectWithMsg("/likeablePerson/list", "삭제되었습니다.");
+        return rq.redirectWithMsg("/likeablePerson/list", delete);
     }
 }
