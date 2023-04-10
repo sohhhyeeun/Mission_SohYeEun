@@ -26,7 +26,8 @@ public class NotProd {
             Member memberUser4 = memberService.join("user4", "1234").getData();
             Member memberUser5 = memberService.join("yeeun", "12345").getData();
 
-            Member memberUser5ByKakao = memberService.whenSocialLogin("KAKAO", "이 부분에 여러분의 카카오 계정을 로그인으로 인해 발생한 회원의 username 을 적는다. 그래야 카카오 로그인이 정상적으로 유지됨, 이게 다 ddl-auto 가 create 라서 그렇습니다.").getData();
+            Member memberUser5ByKakao = memberService.whenSocialLogin("KAKAO", "KAKAO__2733190880").getData();
+            Member memberUser6ByGoogle = memberService.whenSocialLogin("GOOGLE", "GOOGLE__106827022595451603366").getData();
 
             instaMemberService.connect(memberUser2, "insta_user2", "M");
             instaMemberService.connect(memberUser3, "insta_user3", "W");
