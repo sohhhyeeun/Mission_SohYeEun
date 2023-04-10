@@ -1,6 +1,7 @@
 spring:
   profiles:
     active: dev
+    include: secret
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
     url: jdbc:mariadb://127.0.0.1:3306/gram__dev?useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Seoul
@@ -11,12 +12,15 @@ spring:
       client:
         registration:
           kakao:
-            clientId: 0e59d4068f2c83091f3c4511cb557c15
             scope:
             client-name: Kakao
             authorization-grant-type: authorization_code
-            redirect-uri: http://localhost:8080/login/oauth2/code/kakao
+            redirect-uri: '{baseUrl}/{action}/oauth2/code/{registrationId}'
             client-authentication-method: POST
+          google:
+            scope: profile
+            client-name: Google
+            redirect-uri: '{baseUrl}/{action}/oauth2/code/{registrationId}'
         provider:
           kakao:
             authorization-uri: https://kauth.kakao.com/oauth/authorize
@@ -31,9 +35,13 @@ spring:
         show_sql: true
         format_sql: true
         use_sql_comments: true
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
 logging:
   level:
     root: INFO
-    com.ll.gramgram_ai: DEBUG
+    com.ll.gramgram: DEBUG
     org.hibernate.orm.jdbc.bind: TRACE
     org.hibernate.orm.jdbc.extract: TRACE
