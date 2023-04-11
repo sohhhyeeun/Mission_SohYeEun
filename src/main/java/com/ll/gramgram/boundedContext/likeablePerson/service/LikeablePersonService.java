@@ -43,6 +43,21 @@ public class LikeablePersonService {
                 .attractiveTypeCode(attractiveTypeCode) // 1=외모, 2=능력, 3=성격
                 .build();
 
+        // 호감을 표시한 사람의 인스타 아이디
+        InstaMember loginedMember = likeablePerson.getFromInstaMember();
+        String newLikeablePerson = likeablePerson.getToInstaMember().getUsername();
+
+        LikeablePerson likeabledPerson = loginedMember
+                .getFromLikeablePeople()
+                .stream()
+                .filter(lp -> lp.getToInstaMember().getUsername().equals(newLikeablePerson))
+                .findFirst()
+                .orElse(null);
+
+        if (likeabledPerson != null) {
+            return RsData.of("F-1", "%s님은 이미 호감상대로 등록되어 있습니다.".formatted(newLikeablePerson));
+        }
+
         likeablePersonRepository.save(likeablePerson); // 저장
 
         // 호감을 표시한 사람의 인스타 아이디
