@@ -47,6 +47,15 @@ public class LikeablePersonService {
         InstaMember loginedMember = likeablePerson.getFromInstaMember();
         String newLikeablePerson = likeablePerson.getToInstaMember().getUsername();
 
+        long count = loginedMember
+                .getFromLikeablePeople()
+                .stream()
+                .count();
+
+        if (count >= 10) {
+            return RsData.of("F-1", "호감 상대가 10명을 초과했습니다.");
+        }
+
         LikeablePerson likeabledPerson = loginedMember
                 .getFromLikeablePeople()
                 .stream()
