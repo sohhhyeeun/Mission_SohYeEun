@@ -10,7 +10,8 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.List;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
@@ -33,4 +34,10 @@ public class InstaMember {
     private String username;
     @Setter
     private String gender;
+
+    @OneToMany(mappedBy = "fromInstaMember", cascade = {CascadeType.ALL})
+    @OrderBy("id desc") // 정렬
+    @LazyCollection(LazyCollectionOption.EXTRA)
+    @Builder.Default // @Builder 가 있으면 ` = new ArrayList<>();` 가 작동하지 않는다.
+    private List<LikeablePerson> fromLikeablePeople = new ArrayList<>();
 }
