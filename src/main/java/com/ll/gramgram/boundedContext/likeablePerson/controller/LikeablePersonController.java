@@ -1,5 +1,6 @@
 package com.ll.gramgram.boundedContext.likeablePerson.controller;
 
+import com.ll.gramgram.base.appConfig.AppConfig;
 import com.ll.gramgram.base.rq.Rq;
 import com.ll.gramgram.base.rsData.RsData;
 import com.ll.gramgram.boundedContext.instaMember.entity.InstaMember;
