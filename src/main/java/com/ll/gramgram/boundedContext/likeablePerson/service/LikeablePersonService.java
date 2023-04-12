@@ -62,7 +62,7 @@ public class LikeablePersonService {
                 likeabledPerson.setAttractiveTypeCode(likeablePerson.getAttractiveTypeCode()); //매력 변경
                 likeablePersonRepository.delete(likeabledPerson); //이전에 호감을 표시한 사람 삭제
 
-                return RsData.of("F-1", "%s님의 매력이 %s에서 %s으로 변경되었습니다.".formatted(newLikeablePerson, attractiveTypeDisplayName, likeablePerson.getAttractiveTypeDisplayName()));
+                return RsData.of("S-2", "%s님의 매력이 %s에서 %s으로 변경되었습니다.".formatted(newLikeablePerson, attractiveTypeDisplayName, likeablePerson.getAttractiveTypeDisplayName()));
             }
 
             //같은 매력을 선택했다면
