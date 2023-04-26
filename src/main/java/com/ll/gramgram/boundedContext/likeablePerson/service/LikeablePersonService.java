@@ -85,31 +85,6 @@ public class LikeablePersonService {
 
         likeablePersonRepository.save(likeablePerson); // 저장
 
-        // 호감을 표시한 사람의 인스타 아이디
-        InstaMember loginedMember = likeablePerson.getFromInstaMember();
-        String newLikeablePerson = likeablePerson.getToInstaMember().getUsername();
-        LikeablePerson likeabledPerson = loginedMember
-                .getFromLikeablePeople()
-                .stream()
-                .filter(lp -> lp.getToInstaMember().getUsername().equals(newLikeablePerson))
-                .findFirst()
-                .orElse(null);
-
-        if (likeabledPerson != null) {
-            String attractiveTypeDisplayName = likeabledPerson.getAttractiveTypeDisplayName(); //이전에 호감을 표시할 때 선택한 매력
-
-            //다른 매력을 선택했다면
-            if (likeablePerson.getAttractiveTypeDisplayName() != likeabledPerson.getAttractiveTypeDisplayName()) {
-                likeabledPerson.setAttractiveTypeCode(likeablePerson.getAttractiveTypeCode()); //매력 변경
-                likeablePersonRepository.delete(likeabledPerson); //이전에 호감을 표시한 사람 삭제
-
-                return RsData.of("S-2", "%s님의 매력이 %s에서 %s(으)로 변경되었습니다.".formatted(newLikeablePerson, attractiveTypeDisplayName, likeablePerson.getAttractiveTypeDisplayName()));
-            }
-
-            //같은 매력을 선택했다면
-            return RsData.of("F-1", "%s님은 이미 호감상대로 등록되어 있습니다.".formatted(newLikeablePerson));
-        }
-
         // 너가 좋아하는 호감표시 생겼어.
         fromInstaMember.addFromLikeablePerson(likeablePerson);
 
