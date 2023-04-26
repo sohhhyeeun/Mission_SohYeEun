@@ -18,6 +18,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @ToString
 @Entity
 @Getter
+@Setter
 public class LikeablePerson {
     @Id
     @GeneratedValue(strategy = IDENTITY)
