@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
 
@@ -41,6 +42,21 @@ public class Rq {
         }
     }
 
+    public boolean isAdmin() {
+        if (isLogout()) return false;
+
+        return getMember().isAdmin();
+    }
+
+    public boolean isRefererAdminPage() {
+        SavedRequest savedRequest = (SavedRequest) session.getAttribute("SPRING_SECURITY_SAVED_REQUEST");
+
+        if (savedRequest == null) return false;
+
+        String referer = savedRequest.getRedirectUrl();
+        return referer != null && referer.contains("/adm");
+    }
+
     // 로그인 되어 있는지 체크
     public boolean isLogin() {
         return user != null;
@@ -69,7 +85,8 @@ public class Rq {
         String key = "historyBackErrorMsg___" + referer;
         req.setAttribute("localStorageKeyAboutHistoryBackErrorMsg", key);
         req.setAttribute("historyBackErrorMsg", msg);
-        resp.setStatus(HttpServletResponse.SC_BAD_REQUEST); //rq.historyBack이 실행되었을 때 200 이 아닌 400 으로 설정
+        // 200 이 아니라 400 으로 응답코드가 지정되도록
+        resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         return "common/js";
     }
 
@@ -96,5 +113,22 @@ public class Rq {
     // 메세지에 ttl 적용
     private String msgWithTtl(String msg) {
         return Ut.url.encode(msg) + ";ttl=" + new Date().getTime();
+    }
+
+    public void setSessionAttr(String name, String value) {
+        session.setAttribute(name, value);
+    }
+
+    public <T> T getSessionAttr(String name, T defaultValue) {
+        try {
+            return (T) session.getAttribute(name);
+        } catch (Exception ignored) {
+        }
+
+        return defaultValue;
+    }
+
+    public void removeSessionAttr(String name) {
+        session.removeAttribute(name);
     }
 }
