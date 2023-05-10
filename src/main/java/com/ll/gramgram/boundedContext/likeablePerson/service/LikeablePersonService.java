@@ -15,6 +15,8 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -165,11 +167,20 @@ public class LikeablePersonService {
         String oldAttractiveTypeDisplayName = likeablePerson.getAttractiveTypeDisplayName();
         String username = likeablePerson.getToInstaMember().getUsername();
 
-        modifyAttractionTypeCode(likeablePerson, attractiveTypeCode);
+        if (likeablePerson.isModifyUnlocked()) {
+            modifyAttractionTypeCode(likeablePerson, attractiveTypeCode);
 
-        String newAttractiveTypeDisplayName = likeablePerson.getAttractiveTypeDisplayName();
+            String newAttractiveTypeDisplayName = likeablePerson.getAttractiveTypeDisplayName();
 
-        return RsData.of("S-3", "%s님에 대한 호감사유를 %s에서 %s(으)로 변경합니다.".formatted(username, oldAttractiveTypeDisplayName, newAttractiveTypeDisplayName), likeablePerson);
+            return RsData.of("S-3", "%s님에 대한 호감사유를 %s에서 %s(으)로 변경합니다.".formatted(username, oldAttractiveTypeDisplayName, newAttractiveTypeDisplayName), likeablePerson);
+        }
+        else {
+            long seconds = LocalDateTime.now().until(likeablePerson.getModifyUnlockDate(), ChronoUnit.SECONDS); // 현재 시간에서 modifyUnlockDate까지의 차이를 초 단위로 계산해 반환
+            long hours = seconds / 3600;
+            seconds %= 3600;
+            long minutes = (long) Math.ceil(seconds / 60.0); //초 단위에서 반올림
+            return RsData.of("F-5", "%s시간 %s분 이후에 호감사유 변경이 가능합니다".formatted(hours, minutes));
+        }
     }
 
     private RsData<LikeablePerson> modifyAttractive(Member actor, String username, int attractiveTypeCode) {
