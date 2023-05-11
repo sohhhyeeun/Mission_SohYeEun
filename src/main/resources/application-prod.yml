@@ -20,4 +20,4 @@ logging:
     org.hibernate.orm.jdbc.extract: INFO
 custom:
   site:
-    baseUrl: https://www.codelike.app
+    baseUrl: https://www.codesoh.site
