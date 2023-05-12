@@ -11,9 +11,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 
 @Entity
 @Getter
@@ -41,15 +41,7 @@ public class LikeablePerson extends BaseEntity {
 
     // 초 단위에서 올림 해주세요.
     public String getModifyUnlockDateRemainStrHuman() {
-        if (isModifyUnlocked()) {
-            return "";
-        } else {
-            long seconds = LocalDateTime.now().until(modifyUnlockDate, ChronoUnit.SECONDS); // 현재 시간에서 modifyUnlockDate까지의 차이를 초 단위로 계산해 반환
-            long hours = seconds / 3600;
-            seconds %= 3600;
-            long minutes = (long) Math.ceil(seconds / 60.0); //초 단위에서 반올림
-            return String.format("%d시간 %d분", hours, minutes);
-        }
+        return Ut.time.diffFormat1Human(LocalDateTime.now(), modifyUnlockDate);
     }
 
     public RsData updateAttractionTypeCode(int attractiveTypeCode) {
